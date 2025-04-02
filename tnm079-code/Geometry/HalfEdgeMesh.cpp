@@ -17,8 +17,14 @@ bool HalfEdgeMesh::AddFace(const std::vector<glm::vec3>& verts) {
     std::cerr << "ADD TRIANGLE NOT IMPLEMENTED. ";
 
     // Add the vertices of the face/triangle
+    const size_t index1 = AddVertex(verts.at(0));
+    const size_t index2 = AddVertex(verts.at(1));
+    const size_t index3 = AddVertex(verts.at(2));
 
     // Add all half-edge pairs
+    std::pair<size_t, size_t> pair1 = AddHalfEdgePair();
+    std::pair<size_t, size_t> pair2 = AddHalfEdgePair();
+    std::pair<size_t, size_t> pair3 = AddHalfEdgePair();
 
     // Connect inner ring
 
