@@ -22,16 +22,35 @@ bool HalfEdgeMesh::AddFace(const std::vector<glm::vec3>& verts) {
     const size_t index3 = AddVertex(verts.at(2));
 
     // Add all half-edge pairs
-    std::pair<size_t, size_t> pair1 = AddHalfEdgePair();
-    std::pair<size_t, size_t> pair2 = AddHalfEdgePair();
-    std::pair<size_t, size_t> pair3 = AddHalfEdgePair();
+    std::pair<size_t, size_t> pair1 = AddHalfEdgePair(index1, index2);
+    std::pair<size_t, size_t> pair2 = AddHalfEdgePair(index2, index3);
+    std::pair<size_t, size_t> pair3 = AddHalfEdgePair(index3, index1);
+
+    HalfEdge& hEdge1 = e(pair1.first);
+    HalfEdge& hEdge2 = e(pair2.first);
+    HalfEdge& hEdge3 = e(pair3.first);
 
     // Connect inner ring
+    hEdge1.next = pair2.first;
+    hEdge2.next = pair3.first;
+    hEdge3.next = pair1.first;
+
+    hEdge1.prev = pair3.first;
+    hEdge2.prev = pair1.first;
+    hEdge3.prev = pair2.first;
 
     // Finally, create the face, don't forget to set the normal (which should be
     // normalized)
+    Face hEdgeFace{};
+    hEdgeFace.edge = pair1.first;
+
+    mFaces.push_back(hEdgeFace);
+    mFaces.back().normal = FaceNormal(mFaces.size() - 1); // Newly created face will be the last face in the face list
 
     // All half-edges share the same left face (previously added)
+    hEdge1.face = mFaces.size() - 1;
+    hEdge2.face = mFaces.size() - 1;
+    hEdge3.face = mFaces.size() - 1;
 
     // Optionally, track the (outer) boundary half-edges
     // to represent non-closed surfaces
