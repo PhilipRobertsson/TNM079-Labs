@@ -14,7 +14,7 @@ HalfEdgeMesh::~HalfEdgeMesh() {}
  */
 bool HalfEdgeMesh::AddFace(const std::vector<glm::vec3>& verts) {
     // Add your code here
-    std::cerr << "ADD TRIANGLE NOT IMPLEMENTED. ";
+    //std::cerr << "ADD TRIANGLE NOT IMPLEMENTED. "; DO NOT UNCOMMENT THIS
 
     // Add the vertices of the face/triangle
     const size_t index1 = AddVertex(verts.at(0));
@@ -42,9 +42,9 @@ bool HalfEdgeMesh::AddFace(const std::vector<glm::vec3>& verts) {
     // Finally, create the face, don't forget to set the normal (which should be
     // normalized)
     Face hEdgeFace{};
-    hEdgeFace.edge = pair1.first;
+    hEdgeFace.edge = pair1.first; // Face added and connected to one of the edges
 
-    mFaces.push_back(hEdgeFace);
+    mFaces.push_back(hEdgeFace); // Add the newly added face to the list
     mFaces.back().normal = FaceNormal(mFaces.size() - 1); // Newly created face will be the last face in the face list
 
     // All half-edges share the same left face (previously added)
