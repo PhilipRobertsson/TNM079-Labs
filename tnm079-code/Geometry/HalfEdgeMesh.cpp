@@ -38,17 +38,17 @@ bool HalfEdgeMesh::AddFace(const std::vector<glm::vec3>& verts) {
  */
 size_t HalfEdgeMesh::AddVertex(const glm::vec3& v) {
     std::map<glm::vec3, size_t>::iterator it = mUniqueVerts.find(v);
-    if (it != mUniqueVerts.end()) {
+    if (it != mUniqueVerts.end()) { // If we at any point find a non-unique vertex, if it==mUniqueVerts.end(), v is a unique vertex
         return (*it).second;  // get the index of the already existing vertex
     }
 
-    const auto indx = GetNumVerts();
+    const auto indx = GetNumVerts(); // For the unique vertex we assign it to the index corresponding to the last position in our vertex list
     mUniqueVerts[v] = indx;  // op. [ ] constructs a new entry in map
-    Vertex vert;
-    vert.pos = v;
+    Vertex vert; // Instatiate the new vertex
+    vert.pos = v; // Assign the position of v to the new vertex
     mVerts.push_back(vert);  // add it to the vertex list
 
-    return indx;
+    return indx; // All done return what index the vertex is in
 }
 
 /*!
@@ -61,23 +61,23 @@ size_t HalfEdgeMesh::AddVertex(const glm::vec3& v) {
  */
 std::pair<size_t, size_t> HalfEdgeMesh::AddHalfEdgePair(size_t v1, size_t v2) {
     std::map<OrderedPair, size_t>::iterator it = mUniqueEdgePairs.find(OrderedPair(v1, v2));
-    if (it != mUniqueEdgePairs.end()) {
-        auto indx1 = it->second;
-        auto indx2 = e(it->second).pair;
+    if (it != mUniqueEdgePairs.end()) { // Look if current pair is unqie or not, same manner as the vertex check
+        auto indx1 = it->second; // get the index of the first half edge that was a duplicate
+        auto indx2 = e(it->second).pair; // get the index of the second half edge that was a duplicate
         if (v1 != e(indx1).vert) {
             std::swap(indx1, indx2);  // sort correctly
         }
-        return {indx1, indx2};
+        return {indx1, indx2}; // Return the already existing half edge pair, sorted correclty
     }
 
     // If not found, calculate both half-edges indices
-    const auto indx1 = mEdges.size();
-    const auto indx2 = indx1 + 1;
+    const auto indx1 = mEdges.size(); // This will be the new half edge, currently last index
+    const auto indx2 = indx1 + 1; // And this will be the other part of the half, this is the actual last index now
 
     // Create edges and set pair index
-    HalfEdge edge1, edge2;
-    edge1.pair = indx2;
-    edge2.pair = indx1;
+    HalfEdge edge1, edge2; // Instansiate the half edges
+    edge1.pair = indx2; // First half edge is the last edge in the half edge list
+    edge2.pair = indx1; // Second half edge is the next to last edge in the half edge list
 
     // Connect the edges to the verts
     edge1.vert = v1;
@@ -96,7 +96,7 @@ std::pair<size_t, size_t> HalfEdgeMesh::AddHalfEdgePair(size_t v1, size_t v2) {
     mUniqueEdgePairs[op] = indx1;  // op. [ ] constructs a new entry in map, ordering not important
     // sorting done when retrieving
 
-    return {indx1, indx2};
+    return {indx1, indx2}; // Return the new half edge pair as indicies to the half edge list
 }
 
 /*! \lab1 HalfEdgeMesh Implement the MergeAdjacentBoundaryEdge */
