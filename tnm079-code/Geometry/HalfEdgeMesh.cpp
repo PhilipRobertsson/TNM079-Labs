@@ -229,6 +229,14 @@ std::vector<size_t> HalfEdgeMesh::FindNeighborVertices(size_t vertexIndex) const
     std::vector<size_t> oneRing;
 
     // Add your code here
+    HalfEdge currEdge = e(v(vertexIndex).edge);
+    std::size_t end = currEdge.pair;
+    oneRing.push_back(e(currEdge.next).vert);
+
+    while (currEdge.prev != end) {
+        currEdge = e(e(currEdge.prev).pair);
+        oneRing.push_back(e(currEdge.next).vert);
+    }
 
     return oneRing;
 }
@@ -243,13 +251,53 @@ std::vector<size_t> HalfEdgeMesh::FindNeighborFaces(size_t vertexIndex) const {
     std::vector<size_t> foundFaces;
 
     // Add your code here
+    HalfEdge currEdge = e(v(vertexIndex).edge);
+    std::size_t end = currEdge.pair;
+    foundFaces.push_back(e(currEdge.next).face);
+
+    while (currEdge.prev != end) {
+        currEdge = e(e(currEdge.prev).pair);
+        foundFaces.push_back(e(currEdge.next).face);
+    }
+
+    return foundFaces;
+
     return foundFaces;
 }
 
 /*! \lab1 Implement the curvature */
 float HalfEdgeMesh::VertexCurvature(size_t vertexIndex) const {
-    // Copy code from SimpleMesh or compute more accurate estimate
-    return 0;
+    std::vector<size_t> oneRing = FindNeighborVertices(vertexIndex);
+    assert(oneRing.size() != 0);
+    size_t curr, next, prev;
+
+    glm::vec3 sum = {0, 0, 0};
+    float area = 0;
+
+    for (size_t i = 0; i < oneRing.size(); i++) {
+        curr = oneRing.at(i);
+
+        if (i == 0) {
+            prev = oneRing.back();
+        } else {
+            prev = oneRing.at(i - 1);
+        }
+
+        if (i < oneRing.size() - 1) {
+            next = oneRing.at(i + 1);
+        } else {
+            next = oneRing.front();
+        }
+
+        float cotangentAlpha = Cotangent(v(curr).pos, v(prev).pos, v(vertexIndex).pos);
+        float cotangentBeta = Cotangent(v(curr).pos, v(next).pos, v(vertexIndex).pos);
+
+        sum += (cotangentAlpha + cotangentBeta) * (v(vertexIndex).pos - v(curr).pos);
+        area += ((cotangentAlpha + cotangentBeta) * pow(glm::length(v(vertexIndex).pos - v(curr).pos), 2.0f));
+    }
+    area = area / 8.0f;
+
+	return glm::length(sum / (4.0f * area));
 }
 
 float HalfEdgeMesh::FaceCurvature(size_t faceIndex) const {
@@ -278,9 +326,17 @@ glm::vec3 HalfEdgeMesh::FaceNormal(size_t faceIndex) const {
 }
 
 glm::vec3 HalfEdgeMesh::VertexNormal(size_t vertexIndex) const {
-    glm::vec3 n(0.f, 0.f, 0.f);
+    glm::vec3 n(0.f, 0.f, 0.f); //n_vI
 
     // Add your code here
+    std::vector<size_t> neighborFaces = FindNeighborFaces(vertexIndex);
+
+    for (auto face : neighborFaces) {
+        n += f(face).normal;
+    }
+
+    n = glm::normalize(n);
+
     return n;
 }
 
@@ -372,7 +428,23 @@ void HalfEdgeMesh::Update() {
 float HalfEdgeMesh::Area() const {
     float area = 0;
     // Add code here
-    std::cerr << "Area calculation not implemented for half-edge mesh!\n";
+
+    //std::cerr << "Area calculation not implemented for half-edge mesh!\n"; DO NOT UNCOMMENT
+
+    for (auto face : mFaces) {
+        size_t index = face.edge;
+        const EdgeIterator it = GetEdgeIterator(index);
+
+        const auto& v1 = v(it.GetEdgeVertexIndex()).pos;
+        const auto& v2 = v(it.Next().GetEdgeVertexIndex()).pos;
+        const auto& v3 = v(it.Next().GetEdgeVertexIndex()).pos;
+
+        const auto e1 = v2 - v1;
+        const auto e2 = v3 - v1;
+
+        area += glm::length(glm::cross(e1, e2)) / 2;
+    }
+
     return area;
 }
 
@@ -380,7 +452,24 @@ float HalfEdgeMesh::Area() const {
 float HalfEdgeMesh::Volume() const {
     float volume = 0;
     // Add code here
-    std::cerr << "Volume calculation not implemented for half-edge mesh!\n";
+    //std::cerr << "Volume calculation not implemented for half-edge mesh!\n";
+    for (auto face : mFaces) {
+        size_t index = face.edge;
+        const EdgeIterator it = GetEdgeIterator(index);
+
+        const auto& v1 = v(it.GetEdgeVertexIndex()).pos;
+        const auto& v2 = v(it.Next().GetEdgeVertexIndex()).pos;
+        const auto& v3 = v(it.Next().GetEdgeVertexIndex()).pos;
+
+        const auto e1 = v2 - v1;
+        const auto e2 = v3 - v1;
+
+        const auto centroid = (v1 + v2 + v3) / 3.0f;
+        const auto faceNormal = face.normal;
+        const float area = glm::length(glm::cross(e1, e2)) / 2;
+
+        volume += *glm::value_ptr(centroid * faceNormal * area);
+    }
     return volume;
 }
 
