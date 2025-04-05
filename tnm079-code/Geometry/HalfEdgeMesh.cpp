@@ -468,8 +468,12 @@ float HalfEdgeMesh::Volume() const {
         const auto faceNormal = face.normal;
         const float area = glm::length(glm::cross(e1, e2)) / 2;
 
-        volume += *glm::value_ptr(centroid * faceNormal * area);
+        volume += glm::length(centroid * faceNormal * area);
     }
+
+    // According to equation 16 in lab PM
+    volume /= 3;
+
     return volume;
 }
 
