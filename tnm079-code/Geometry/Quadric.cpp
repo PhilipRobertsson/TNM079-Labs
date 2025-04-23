@@ -24,12 +24,33 @@ Quadric::~Quadric() {}
  * coefficient matrix by GetTransform() ONCE (see Section 2.2 in lab text).
  */
 float Quadric::GetValue(float x, float y, float z) const {
-    return 0.f;
+
+    glm::vec4 pWorld = glm::vec4(x, y, z, 1.0f);
+
+    glm::mat4 invM = glm::inverse(mWorld2Obj);
+
+    glm::vec4 pObj = pWorld * invM;
+
+    return glm::dot(pObj, mQuadric * pObj);
 }
 
 /*!
  * Use the quadric matrix to evaluate the gradient.
  */
 glm::vec3 Quadric::GetGradient(float x, float y, float z) const {
-    return glm::vec3(0.f, 0.f, 0.f);
+    
+    glm::vec4 pWorld = glm::vec4(x, y, z, 1.0f);
+
+    glm::mat4 invM = glm::inverse(mWorld2Obj);
+
+    glm::vec4 pObj = pWorld * invM;
+
+    glm::mat4 Q = mQuadric;
+
+    Q[3][0] = 0.0f;
+    Q[3][1] = 0.0f;
+    Q[3][2] = 0.0f;
+    Q[3][3] = 0.0f;
+
+    return 2.0f * Q * pObj;
 }

@@ -678,6 +678,11 @@ void FrameMain::AddObjectQuadricPlane(wxCommandEvent& event) {
     glm::mat4 M{1.0f};
     // Construct the quadric matrix here
 
+    M = glm::mat4(0.0f, 0.0f, 0.0f, 0.5f,
+                  0.0f, 0.0f, 0.0f, 0.5f, 
+                  0.0f, 0.0f, 0.0f, 0.5f, 
+                  0.5f, 0.5f, 0.5f, 0.0f);
+
     Quadric* Q = new Quadric(M);
     Q->SetBoundingBox(Bbox(-1, 1));
     Q->SetMeshSampling(GetMeshSampling());
@@ -691,6 +696,11 @@ void FrameMain::AddObjectQuadricPlane(wxCommandEvent& event) {
 void FrameMain::AddObjectQuadricCylinder(wxCommandEvent& event) {
     glm::mat4 M{1.0f};
     // Construct the quadric matrix here
+
+    M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                  0.0f, 1.0f, 0.0f, 0.0f, 
+                  0.0f, 0.0f, 0.0f, 0.0f, 
+                  0.0f, 0.0f, 0.0f, -1.0f);
 
     Quadric* Q = new Quadric(M);
     Q->SetBoundingBox(Bbox(-1, 1));
@@ -706,6 +716,11 @@ void FrameMain::AddObjectQuadricEllipsoid(wxCommandEvent& event) {
     glm::mat4 M{1.0f};
     // Construct the quadric matrix here
 
+    M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                  0.0f, 1.0f, 0.0f, 0.0f, 
+                  0.0f, 0.0f, 1.0f, 0.0f, 
+                  0.0f, 0.0f, 0.0f, -1.0f);
+
     Quadric* Q = new Quadric(M);
     Q->SetBoundingBox(Bbox(-1, 1));
     Q->SetMeshSampling(GetMeshSampling());
@@ -719,6 +734,11 @@ void FrameMain::AddObjectQuadricEllipsoid(wxCommandEvent& event) {
 void FrameMain::AddObjectQuadricCone(wxCommandEvent& event) {
     glm::mat4 M{1.0f};
     // Construct the quadric matrix here
+
+    M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                  0.0f, 1.0f, 0.0f, 0.0f, 
+                  0.0f, 0.0f, -1.0f, 0.0f, 
+                  0.0f, 0.0f, 0.0f, 0.0f);
 
     Quadric* Q = new Quadric(M);
     Q->SetBoundingBox(Bbox(-1, 1));
@@ -734,6 +754,11 @@ void FrameMain::AddObjectQuadricParaboloid(wxCommandEvent& event) {
     glm::mat4 M{1.0f};
     // Construct the quadric matrix here
 
+    M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                  0.0f, 1.0f, 0.0f, 0.0f, 
+                  0.0f, 0.0f, 0.0f, -0.5f, 
+                  0.0f, 0.0f, -0.5f, 0.0f);
+
     Quadric* Q = new Quadric(M);
     Q->SetBoundingBox(Bbox(-2, 2));
     Q->SetMeshSampling(GetMeshSampling());
@@ -747,6 +772,11 @@ void FrameMain::AddObjectQuadricParaboloid(wxCommandEvent& event) {
 void FrameMain::AddObjectQuadricHyperboloid(wxCommandEvent& event) {
     glm::mat4 M{1.0f};
     // Construct the quadric matrix here
+
+    M = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                  0.0f, 1.0f, 0.0f, 0.0f, 
+                  0.0f, 0.0f, -1.0f, 0.0f, 
+                  0.0f, 0.0f, 0.0f, 1.0f);
 
     Quadric* Q = new Quadric(M);
     Q->SetBoundingBox(Bbox(-2, 2));
