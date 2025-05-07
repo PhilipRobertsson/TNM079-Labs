@@ -276,9 +276,9 @@ void FluidSolver::Projection() {
                     // \nabla \dot w_i,j,k)
                     // TODO: Add code here
 
-                    b[ind] = (mVelocityField.GetValue(i+1,j,k).x - mVelocityField.GetValue(i-1,j,k).x) / (2.0f*mDx) +
-                             (mVelocityField.GetValue(i,j+1,k).y - mVelocityField.GetValue(i,j-1,k).y) / (2.0f*mDx) + 
-                             (mVelocityField.GetValue(i,j,k+1).z - mVelocityField.GetValue(i,j,k-1).z) / (2.0f*mDx);
+                    b[ind] = (mVelocityField.GetValue(i+1,j,k).x - mVelocityField.GetValue(i-1,j,k).x +
+                             mVelocityField.GetValue(i,j+1,k).y - mVelocityField.GetValue(i,j-1,k).y + 
+                             mVelocityField.GetValue(i,j,k+1).z - mVelocityField.GetValue(i,j,k-1).z) / (2.0f*mDx);
 
                     // Compute entries for A matrix (discrete Laplacian operator).
                     // The A matrix is a sparse matrix but can be used like a regular

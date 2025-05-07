@@ -129,7 +129,7 @@ glm::vec3 LevelSet::GetGradient(float x, float y, float z) const {
     size_t j = static_cast<size_t>(y);
     size_t k = static_cast<size_t>(z);
 
-    return glm::vec3(DiffXp(i, j, k), DiffYp(i, j, k), DiffZp(i, j, k));
+    return glm::vec3(DiffXpm(i, j, k), DiffYpm(i, j, k), DiffZpm(i, j, k));
 
 }
 

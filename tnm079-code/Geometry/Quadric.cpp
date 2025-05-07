@@ -25,11 +25,9 @@ Quadric::~Quadric() {}
  */
 float Quadric::GetValue(float x, float y, float z) const {
 
-    glm::vec4 pWorld = glm::vec4(x, y, z, 1.0f);
+    Implicit::TransformW2O(x, y, z);
 
-    glm::mat4 invM = glm::inverse(mWorld2Obj);
-
-    glm::vec4 pObj = pWorld * invM;
+    glm::vec4 pObj = glm::vec4(x,y,z,1.0f);
 
     return glm::dot(pObj, mQuadric * pObj);
 }
@@ -39,11 +37,9 @@ float Quadric::GetValue(float x, float y, float z) const {
  */
 glm::vec3 Quadric::GetGradient(float x, float y, float z) const {
     
-    glm::vec4 pWorld = glm::vec4(x, y, z, 1.0f);
+    Implicit::TransformW2O(x, y, z);
 
-    glm::mat4 invM = glm::inverse(mWorld2Obj);
-
-    glm::vec4 pObj = pWorld * invM;
+    glm::vec4 pObj = glm::vec4(x, y, z, 1.0f);
 
     glm::mat4 Q = mQuadric;
 
